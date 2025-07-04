@@ -1,7 +1,9 @@
-class AppSpacing {
-  static const xs = 4.0;
-  static const sm = 8.0;
-  static const md = 16.0;
-  static const lg = 24.0;
-  static const xl = 32.0;
+import 'package:flutter/material.dart';
+
+class AppColors {
+  static const primary = Colors.blue;
+  static const secondary = Colors.grey;
+  static const background = Colors.white;
+  static const textPrimary = Colors.black;
+  static const error = Colors.red;
 }

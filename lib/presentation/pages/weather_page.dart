@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_app/core/constants/app_strings.dart';
+import 'package:weather_app/presentation/theme/app_colors.dart';
+import 'package:weather_app/presentation/theme/app_sizing.dart';
+import 'package:weather_app/presentation/theme/app_spacing.dart';
 
 import '../bloc/weather_bloc.dart';
 
@@ -19,13 +22,20 @@ class _WeatherPageState extends State<WeatherPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text(AppStrings.appTitle),
         actions: [
-          Switch(
-            value: isCelsius,
-            onChanged: (v) => setState(() => isCelsius = v),
-          )
+          Row(
+            children: [
+              const Text("°C/°F", style: TextStyle(fontSize: 14)),
+              Switch(
+                value: isCelsius,
+                onChanged: (v) => setState(() => isCelsius = v),
+              ),
+              const SizedBox(width: AppSpacing.lg),
+            ],
+          ),
         ],
       ),
       body: BlocBuilder<WeatherBloc, WeatherState>(
@@ -39,36 +49,56 @@ class _WeatherPageState extends State<WeatherPage> {
                 context.read<WeatherBloc>().add(FetchWeatherEvent());
               },
               child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                 children: [
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.lg),
                   Center(
-                      child: Text(DateFormat('EEEE').format(weather.date),
-                          style: const TextStyle(fontSize: 24))),
-                  Center(
-                      child: Image.network(
-                          'https://openweathermap.org/img/w/${weather.icon}.png')),
-                  Center(
-                      child: Text('${_formatTemp(weather.temperature)}°',
-                          style: const TextStyle(fontSize: 48))),
-                  Center(
-                      child: Text(weather.condition,
-                          style: const TextStyle(fontSize: 20))),
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('${AppStrings.humidity}: ${weather.humidity}%',
-                            style: const TextStyle(fontSize: 16)),
-                        Text('${AppStrings.pressure}: ${weather.pressure} hPa',
-                            style: const TextStyle(fontSize: 16)),
-                        Text('${AppStrings.wind}: ${weather.wind} km/h',
-                            style: const TextStyle(fontSize: 16)),
-                      ],
+                    child: Text(
+                      DateFormat('EEEE').format(weather.date),
+                      style: const TextStyle(fontSize: 24),
                     ),
                   ),
+                  const SizedBox(height: AppSpacing.md),
+                  Center(
+                    child: Image.network(
+                      'https://openweathermap.org/img/w/${weather.icon}.png',
+                      height: AppSizing.imageSize,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  Center(
+                    child: Text(
+                      '${_formatTemp(weather.temperature)}°',
+                      style: const TextStyle(fontSize: 48),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      weather.condition,
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${AppStrings.humidity}: ${weather.humidity}%',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      Text(
+                        '${AppStrings.pressure}: ${weather.pressure} hPa',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      Text(
+                        '${AppStrings.wind}: ${weather.wind} km/h',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.xl),
                   SizedBox(
-                    height: 100,
+                    height: AppSizing.listItemHeight,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: state.forecast.length,
@@ -78,21 +108,27 @@ class _WeatherPageState extends State<WeatherPage> {
                           onTap: () => setState(() => selectedIndex = index),
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
-                            margin: const EdgeInsets.all(8),
-                            padding: const EdgeInsets.all(12),
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.sm,
+                            ),
+                            padding: const EdgeInsets.all(AppSpacing.md),
+                            width: AppSizing.listItemWidth,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: selectedIndex == index
-                                  ? Colors.blue
-                                  : Colors.grey.shade300,
+                                  ? AppColors.primary
+                                  : AppColors.secondary.shade300,
                             ),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(DateFormat('E').format(item.date)),
+                                const SizedBox(height: AppSpacing.xs),
                                 Image.network(
-                                    'https://openweathermap.org/img/w/${item.icon}.png',
-                                    height: 30),
+                                  'https://openweathermap.org/img/w/${item.icon}.png',
+                                  height: AppSizing.iconSize,
+                                ),
+                                const SizedBox(height: AppSpacing.xs),
                                 Text('${_formatTemp(item.temperature)}°'),
                               ],
                             ),
@@ -100,7 +136,8 @@ class _WeatherPageState extends State<WeatherPage> {
                         );
                       },
                     ),
-                  )
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
                 ],
               ),
             );
