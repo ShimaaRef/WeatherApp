@@ -45,22 +45,52 @@ class _WeatherPageState extends State<WeatherPage> {
               onRefresh: () async {
                 context.read<WeatherBloc>().add(FetchWeatherEvent());
               },
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                children: [
-                  const SizedBox(height: AppSpacing.lg),
-                  WeatherHeader(weather: weather, isCelsius: isCelsius),
-                  const SizedBox(height: AppSpacing.lg),
-                  WeatherDetails(weather: weather),
-                  const SizedBox(height: AppSpacing.xl),
-                  ForecastList(
-                    forecast: state.forecast,
-                    selectedIndex: selectedIndex,
-                    isCelsius: isCelsius,
-                    onTap: (i) => setState(() => selectedIndex = i),
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                ],
+              child: OrientationBuilder(
+                builder: (context, orientation) {
+                  final isPortrait = orientation == Orientation.portrait;
+
+                  return ListView(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                    children: [
+                      const SizedBox(height: AppSpacing.lg),
+
+                      // Adaptive section
+                      if (isPortrait)
+                        Column(
+                          children: [
+                            WeatherHeader(
+                                weather: weather, isCelsius: isCelsius),
+                            const SizedBox(height: AppSpacing.lg),
+                            WeatherDetails(weather: weather),
+                          ],
+                        )
+                      else
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: WeatherHeader(
+                                  weather: weather, isCelsius: isCelsius),
+                            ),
+                            const SizedBox(width: AppSpacing.lg),
+                            Expanded(
+                              child: WeatherDetails(weather: weather),
+                            ),
+                          ],
+                        ),
+
+                      const SizedBox(height: AppSpacing.xl),
+                      ForecastList(
+                        forecast: state.forecast,
+                        selectedIndex: selectedIndex,
+                        isCelsius: isCelsius,
+                        onTap: (i) => setState(() => selectedIndex = i),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                    ],
+                  );
+                },
               ),
             );
           }
