@@ -28,7 +28,13 @@ class WeatherLoaded extends WeatherState {
   List<Object?> get props => [forecast];
 }
 
-class WeatherError extends WeatherState {}
+class WeatherError extends WeatherState {
+  final String message;
+  WeatherError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
 
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   final GetWeatherForecast getWeatherForecast;
@@ -43,8 +49,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       emit(WeatherLoading());
       final forecast = await getWeatherForecast();
       emit(WeatherLoaded(forecast));
-    } catch (_) {
-      emit(WeatherError());
+    } catch (e) {
+      emit(WeatherError(e.toString()));
     }
   }
 }

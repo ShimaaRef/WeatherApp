@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
@@ -16,18 +17,20 @@ class WeatherRemoteDataSourceImpl implements WeatherRemoteDataSource {
   @override
   Future<List<WeatherModel>> fetchWeather() async {
     final url = Uri.parse('$_baseUrl?q=$_city&appid=$_apiKey&units=metric');
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      print('Response success: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      final data = json.decode(response.body);
-      return List<WeatherModel>.from(
-        data['list'].map((e) => WeatherModel.fromJson(e)),
-      );
-    } else {
-      print('Response Failed with status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      throw Exception('Failed to fetch weather');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return List<WeatherModel>.from(
+          data['list'].map((e) => WeatherModel.fromJson(e)),
+        );
+      } else {
+        throw Exception('Server responded with status: ${response.statusCode}');
+      }
+    } on SocketException {
+      throw Exception('No Internet connection');
+    } catch (e) {
+      throw Exception('Unexpected error: $e');
     }
   }
 }

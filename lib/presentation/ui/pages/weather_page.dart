@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/core/constants/app_strings.dart';
-import 'package:weather_app/presentation/bloc/weather_bloc.dart';
+import 'package:weather_app/presentation/pages/widgets/error_view.dart';
+import 'package:weather_app/presentation/pages/widgets/forecast_list.dart';
+import 'package:weather_app/presentation/pages/widgets/unit_toggle.dart';
+import 'package:weather_app/presentation/pages/widgets/weather_details.dart';
+import 'package:weather_app/presentation/pages/widgets/weather_header.dart';
 import 'package:weather_app/presentation/theme/app_colors.dart';
 import 'package:weather_app/presentation/theme/app_spacing.dart';
 
-import 'widgets/error_view.dart';
-import 'widgets/forecast_list.dart';
-import 'widgets/unit_toggle.dart';
-import 'widgets/weather_details.dart';
-import 'widgets/weather_header.dart';
+import '../../bloc/weather_bloc.dart';
 
 class WeatherPage extends StatefulWidget {
   const WeatherPage({super.key});
