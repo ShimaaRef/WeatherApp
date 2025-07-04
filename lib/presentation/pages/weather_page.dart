@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/core/constants/app_strings.dart';
 import 'package:weather_app/presentation/bloc/weather_bloc.dart';
+import 'package:weather_app/presentation/pages/widgets/error_view.dart';
+import 'package:weather_app/presentation/pages/widgets/forecast_list.dart';
+import 'package:weather_app/presentation/pages/widgets/unit_toggle.dart';
+import 'package:weather_app/presentation/pages/widgets/weather_details.dart';
+import 'package:weather_app/presentation/pages/widgets/weather_header.dart';
 import 'package:weather_app/presentation/theme/app_colors.dart';
 import 'package:weather_app/presentation/theme/app_spacing.dart';
-
-import 'widgets/error_view.dart';
-import 'widgets/forecast_list.dart';
-import 'widgets/unit_toggle.dart';
-import 'widgets/weather_details.dart';
-import 'widgets/weather_header.dart';
 
 class WeatherPage extends StatefulWidget {
   const WeatherPage({super.key});
@@ -36,8 +35,9 @@ class _WeatherPageState extends State<WeatherPage> {
       ),
       body: BlocBuilder<WeatherBloc, WeatherState>(
         builder: (context, state) {
-          if (state is WeatherLoading)
+          if (state is WeatherLoading) {
             return const Center(child: CircularProgressIndicator());
+          }
           if (state is WeatherError) return ErrorView(state.message);
           if (state is WeatherLoaded) {
             final weather = state.forecast[selectedIndex];
@@ -45,22 +45,52 @@ class _WeatherPageState extends State<WeatherPage> {
               onRefresh: () async {
                 context.read<WeatherBloc>().add(FetchWeatherEvent());
               },
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                children: [
-                  const SizedBox(height: AppSpacing.lg),
-                  WeatherHeader(weather: weather, isCelsius: isCelsius),
-                  const SizedBox(height: AppSpacing.lg),
-                  WeatherDetails(weather: weather),
-                  const SizedBox(height: AppSpacing.xl),
-                  ForecastList(
-                    forecast: state.forecast,
-                    selectedIndex: selectedIndex,
-                    isCelsius: isCelsius,
-                    onTap: (i) => setState(() => selectedIndex = i),
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                ],
+              child: OrientationBuilder(
+                builder: (context, orientation) {
+                  final isPortrait = orientation == Orientation.portrait;
+
+                  return ListView(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                    children: [
+                      const SizedBox(height: AppSpacing.lg),
+
+                      // Adaptive section
+                      if (isPortrait)
+                        Column(
+                          children: [
+                            WeatherHeader(
+                                weather: weather, isCelsius: isCelsius),
+                            const SizedBox(height: AppSpacing.lg),
+                            WeatherDetails(weather: weather),
+                          ],
+                        )
+                      else
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: WeatherHeader(
+                                  weather: weather, isCelsius: isCelsius),
+                            ),
+                            const SizedBox(width: AppSpacing.lg),
+                            Expanded(
+                              child: WeatherDetails(weather: weather),
+                            ),
+                          ],
+                        ),
+
+                      const SizedBox(height: AppSpacing.xl),
+                      ForecastList(
+                        forecast: state.forecast,
+                        selectedIndex: selectedIndex,
+                        isCelsius: isCelsius,
+                        onTap: (i) => setState(() => selectedIndex = i),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                    ],
+                  );
+                },
               ),
             );
           }

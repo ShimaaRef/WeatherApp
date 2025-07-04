@@ -5,7 +5,7 @@ import 'package:weather_app/presentation/bloc/weather_bloc.dart';
 
 class ErrorView extends StatelessWidget {
   final String message;
-  const ErrorView(this.message);
+  const ErrorView(this.message, {super.key});
 
   @override
   Widget build(BuildContext context) {

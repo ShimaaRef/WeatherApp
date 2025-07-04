@@ -8,7 +8,8 @@ class WeatherHeader extends StatelessWidget {
   final WeatherEntity weather;
   final bool isCelsius;
 
-  const WeatherHeader({required this.weather, required this.isCelsius});
+  const WeatherHeader(
+      {super.key, required this.weather, required this.isCelsius});
 
   int _formatTemp(double temp) =>
       isCelsius ? temp.round() : ((temp * 9 / 5) + 32).round();

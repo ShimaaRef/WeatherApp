@@ -12,6 +12,7 @@ class ForecastList extends StatelessWidget {
   final ValueChanged<int> onTap;
 
   const ForecastList({
+    super.key,
     required this.forecast,
     required this.selectedIndex,
     required this.isCelsius,

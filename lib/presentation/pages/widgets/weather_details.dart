@@ -5,7 +5,7 @@ import 'package:weather_app/domain/entities/weather_entity.dart';
 class WeatherDetails extends StatelessWidget {
   final WeatherEntity weather;
 
-  const WeatherDetails({required this.weather});
+  const WeatherDetails({super.key, required this.weather});
 
   @override
   Widget build(BuildContext context) {

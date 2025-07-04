@@ -5,7 +5,8 @@ class UnitToggle extends StatelessWidget {
   final bool isCelsius;
   final ValueChanged<bool> onChanged;
 
-  const UnitToggle({required this.isCelsius, required this.onChanged});
+  const UnitToggle(
+      {super.key, required this.isCelsius, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
